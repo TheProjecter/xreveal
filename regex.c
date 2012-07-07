@@ -16,9 +16,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_LAYOUT_H
-#define SKIPPY_LAYOUT_H
+#include "skippy.h"
+#include "regex.h"
 
-void layout_run(MainWin *, dlist *, unsigned int *, unsigned int *);
+char *
+re_match_copy(const char *line, regmatch_t *match)
+{
+	char *r;
+	r = (char *)malloc(match->rm_eo + 1);
+	strncpy(r, line + match->rm_so, match->rm_eo - match->rm_so);
+	r[match->rm_eo - match->rm_so] = 0;
+	return r;
+}
 
-#endif /* SKIPPY_LAYOUT_H */
+int
+re_match_check(regmatch_t *match)
+{
+	return match->rm_so != -1;
+}
+
+regoff_t
+re_match_len(regmatch_t *match)
+{
+	return match->rm_eo - match->rm_so;
+}

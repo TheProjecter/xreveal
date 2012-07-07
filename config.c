@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,21 +17,15 @@
  */
 
 #include "skippy.h"
+#include <fcntl.h>
+#include <assert.h>
+#include <errno.h>
+#include "regex.h"
 
 typedef struct
 {
 	char *section, *key, *value;
 } ConfigEntry;
-
-static char *
-copy_match(const char *line, regmatch_t *match)
-{
-	char *r;
-	r = (char *)malloc(match->rm_eo + 1);
-	strncpy(r, line + match->rm_so, match->rm_eo - match->rm_so);
-	r[match->rm_eo - match->rm_so] = 0;
-	return r;
-}
 
 static ConfigEntry *
 entry_new(const char *section, char *key, char *value)
@@ -63,99 +56,90 @@ entry_set(dlist *config, const char *section, char *key, char *value)
 	return dlist_add(config, entry);
 }
 
-static dlist *
-config_parse(char *config)
-{
-	regex_t re_section, re_empty, re_entry;
-	regmatch_t matches[5];
-	char line[8192], *section = 0;
-	int ix = 0, l_ix = 0;
-	dlist *new_config = 0;
-	
-	regcomp(&re_section, "^[[:space:]]*\\[[[:space:]]*([[:alnum:]]*?)[[:space:]]*\\][[:space:]]*$", REG_EXTENDED);
-	regcomp(&re_empty, "^[[:space:]]*#|^[[:space:]]*$", REG_EXTENDED);
-	regcomp(&re_entry, "^[[:space:]]*([[:alnum:]]+)[[:space:]]*=[[:space:]]*(.*?)[[:space:]]*$", REG_EXTENDED);
-	
-	while(1)
-	{
-		if((config[ix] == '\0' || config[ix] == '\n'))
-		{
-			line[l_ix] = 0;
-			if(regexec(&re_empty, line, 5, matches, 0) == 0) {
-				/* do nothing */
-			} else if(regexec(&re_section, line, 5, matches, 0) == 0) {
-				if(section)
-					free(section);
-				section = copy_match(line, &matches[1]);
-			} else if(section && regexec(&re_entry, line, 5, matches, 0) == 0) {
-				char *key = copy_match(line, &matches[1]),
-				     *value = copy_match(line, &matches[2]);
-				new_config = entry_set(new_config, section, key, value);
-			} else  {
-				fprintf(stderr, "WARNING: Ignoring invalid line: %s\n", line);
-			}
-			l_ix = 0;
-		} else {
-			line[l_ix] = config[ix];
-			l_ix++;
-		}
-		if(config[ix] == 0)
-			break;
-		++ix;
-	}
-	
-	if(section)
-		free(section);
-	
-	regfree(&re_section);
-	regfree(&re_empty);
-	regfree(&re_entry);
-	
-	return new_config;
-}
-
 dlist *
-config_load(const char *path)
-{
-	FILE *fin = fopen(path, "r");
-	long flen;
-	char *data;
-	dlist *config;
+config_load(const char *path) {
+    int fd = open(path, O_RDONLY);
+    if (fd == -1) {
+        fprintf(stderr, "WARNING: couldn't load %s: %s\n", path,
+            strerror(errno));
+        return 0;
+    }
+
+    regex_t re_section, re_empty, re_entry;
+    regcomp(&re_section, "^[[:space:]]*\\[[[:space:]]*([[:alnum:]]*?)"
+        "[[:space:]]*\\][[:space:]]*$", REG_EXTENDED);
+    regcomp(&re_empty, "^[[:space:]]*(#|$)", REG_EXTENDED);
+    regcomp(&re_entry, "^[[:space:]]*([-_[:alnum:]]+)[[:space:]]*="
+        "[[:space:]]*(.*?)[[:space:]]*$", REG_EXTENDED);
 	
-	if(! fin)
-	{
-		fprintf(stderr, "WARNING: Couldn't load config file '%s'.\n", path);
-		return 0;
+    dlist *config = NULL;
+    char *section = NULL;
+	
+    char line[8192];
+    int len = 0;
+    int eof = 0;
+    while (!eof) {
+        int eol = 0;
+        ssize_t n = read(fd, line + len, 1);
+        switch (n) {
+        case -1:
+            fprintf(stderr, "WARNING: couldn't read %s: %s\n", path,
+                strerror(errno));
+            eof = 1;
+            break;
+
+        case 0:
+            eol = 1;
+            eof = 1;
+            break;
+
+        default:
+            assert (n == 1);
+            switch (line[len]) {
+            case '\n':
+            case '\r':
+            case '\0':
+                eol = 1;
+                break;
+            default:
+                len += n;
+                if (len == COUNT(line) - 1) {
+                    eol = 1;
+                }
+            }
+        }
+
+        if (eol && len != 0) {
+            line[len] = '\0';
+            len = 0;
+
+            regmatch_t matches[5];
+            if (regexec(&re_empty, line, COUNT(matches), matches, 0) == 0) {
+		/* do nothing */
+            } else if (regexec(&re_section, line, COUNT(matches), matches, 0)
+                == 0) {
+		free(section);
+		section = re_match_copy(line, &matches[1]);
+            } else if (section && regexec(&re_entry, line, COUNT(matches),
+                matches, 0) == 0) {
+
+                char *key = re_match_copy(line, &matches[1]);
+                char *value = re_match_copy(line, &matches[2]);
+                config = entry_set(config, section, key, value);
+	    } else  {
+                fprintf(stderr, "WARNING: %s: invalid line: %s\n", path, line);
+	    }
 	}
+    }
 	
-	fseek(fin, 0, SEEK_END);
-	flen = ftell(fin);
-	
-	if(! flen)
-	{
-		fprintf(stderr, "WARNING: '%s' is empty.\n", path);
-		fclose(fin);
-		return 0;
-	}
-	
-	fseek(fin, 0, SEEK_SET);
-	
-	data = (char *)malloc(flen + 1);
-	if(fread(data, 1, flen, fin) != flen)
-	{
-		fprintf(stderr, "WARNING: Couldn't read from config file '%s'.\n", path);
-		free(data);
-		fclose(fin);
-		return 0;
-	}
-	
-	fclose(fin);
-	
-	config = config_parse(data);
-	
-	free(data);
-	
-	return config;
+    close(fd);
+    free(section);
+    
+    regfree(&re_section);
+    regfree(&re_empty);
+    regfree(&re_entry);
+    
+    return config;
 }
 
 static void

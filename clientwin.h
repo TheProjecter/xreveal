@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -31,9 +30,16 @@ typedef struct _SkippyWindow SkippyWindow;
 
 struct _MainWin;
 struct _ClientWin{
+	/* The main (desktop-sized) window, parent to all mini windows */
 	struct _MainWin *mainwin;
 	
-	SkippyWindow client;
+	/* The main window, i.e. the one being managed by the window manager */
+	Window window;
+
+	/* The "framing" window, containing the main window and a frame */
+	SkippyWindow topmost;
+
+	/* The miniature version of the topmost window, added to mainwin */
 	SkippyWindow mini;
 	
 	Pixmap pixmap;

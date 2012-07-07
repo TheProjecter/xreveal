@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -31,6 +30,7 @@ Atom
 	ESETROOT_PMAP_ID,
 	
 	/* NetWM atoms */
+	_NET_ACTIVE_WINDOW,
 	_NET_SUPPORTING_WM_CHECK,
 	_NET_SUPPORTED,
 	_NET_NUMBER_OF_DESKTOPS,

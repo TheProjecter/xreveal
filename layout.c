@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -35,9 +34,9 @@ layout_run(MainWin *mw, dlist *windows, unsigned int *total_width, unsigned int 
 	for(iter = windows; iter; iter = iter->next)
 	{
 		ClientWin *cw = (ClientWin *)iter->data;
-		sum_w += cw->client.width;
-		max_w = MAX(max_w, cw->client.width);
-		max_h = MAX(max_h, cw->client.height);
+		sum_w += cw->topmost.width;
+		max_w = MAX(max_w, cw->topmost.width);
+		max_h = MAX(max_h, cw->topmost.height);
 	}
 	
 	for(iter = windows; iter; iter = iter->next)
@@ -48,8 +47,8 @@ layout_run(MainWin *mw, dlist *windows, unsigned int *total_width, unsigned int 
 		{
 			dlist *slot = (dlist *)slot_iter->data;
 			int slot_h = -mw->distance;
-			REDUCE(slot_h = slot_h + ((ClientWin*)iter->data)->client.height + mw->distance, slot);
-			if(slot_h + mw->distance + cw->client.height < max_h)
+			REDUCE(slot_h = slot_h + ((ClientWin*)iter->data)->topmost.height + mw->distance, slot);
+			if(slot_h + mw->distance + cw->topmost.height < max_h)
 			{
 				slot_iter->data = dlist_add(slot, cw);
 				break;
@@ -64,14 +63,14 @@ layout_run(MainWin *mw, dlist *windows, unsigned int *total_width, unsigned int 
 	{
 		dlist *slot = (dlist *)slot_iter->data;
 		int slot_w = 0;
-		REDUCE(slot_w = MAX(slot_w, ((ClientWin*)iter->data)->client.width), slot);
+		REDUCE(slot_w = MAX(slot_w, ((ClientWin*)iter->data)->topmost.width), slot);
 		y = row_y;
 		for(iter = dlist_first(slot); iter; iter = iter->next)
 		{
 			ClientWin *cw = (ClientWin *)iter->data;
-			cw->x = x + (slot_w - cw->client.width) / 2;
+			cw->x = x + (slot_w - cw->topmost.width) / 2;
 			cw->y = y;
-			y += cw->client.height + mw->distance;
+			y += cw->topmost.height + mw->distance;
 			rows->data = dlist_add((dlist *)rows->data, cw);
 		}
 		row_h = MAX(row_h, y - row_y);
@@ -96,7 +95,7 @@ layout_run(MainWin *mw, dlist *windows, unsigned int *total_width, unsigned int 
 	{
 		dlist *row = (dlist *)iter->data;
 		int row_w = 0, xoff;
-		REDUCE(row_w = MAX(row_w, ((ClientWin*)iter->data)->x + ((ClientWin*)iter->data)->client.width), row);
+		REDUCE(row_w = MAX(row_w, ((ClientWin*)iter->data)->x + ((ClientWin*)iter->data)->topmost.width), row);
 		xoff = (*total_width - row_w) / 2;
 		REDUCE(((ClientWin*)iter->data)->x += xoff, row);
 		dlist_free(row);

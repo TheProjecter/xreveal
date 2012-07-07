@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -51,7 +50,7 @@ struct _MainWin
 	dlist *cod;
 	struct _Tooltip *tooltip;
 	
-	KeyCode key_act, key_up, key_down, key_left, key_right, key_enter, key_space, key_q, key_escape;
+	KeyCode key_up, key_down, key_left, key_right, key_enter, key_space, key_escape;
 	
 #ifdef XINERAMA
 	int xin_screens;

@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,6 +35,7 @@
 # include <X11/extensions/Xinerama.h>
 #endif
 
+#define COUNT(x) (sizeof (x) / sizeof (*x))
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/poll.h>

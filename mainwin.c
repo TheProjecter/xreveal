@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -111,7 +110,6 @@ mainwin_create(Display *dpy, dlist *config)
 	mw->key_enter = XKeysymToKeycode(dpy, XK_Return);
 	mw->key_space = XKeysymToKeycode(dpy, XK_space);
 	mw->key_escape = XKeysymToKeycode(dpy, XK_Escape);
-	mw->key_q = XKeysymToKeycode(dpy, XK_q);
 	
 	XGetWindowAttributes(dpy, mw->root, &rootattr);
 	mw->x = mw->y = 0;
@@ -131,6 +129,12 @@ mainwin_create(Display *dpy, dlist *config)
 		return 0;
 	}
 	
+	/* Set the class name */
+	XClassHint hint;
+	hint.res_name = "Skippy";
+	hint.res_class = "Skippy";
+	XSetClassHint(mw->dpy, mw->window, &hint);
+
 #ifdef XINERAMA
 # ifdef DEBUG
 	fprintf(stderr, "--> checking for Xinerama extension... ");

@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -58,6 +57,7 @@ wm_get_atoms(Display *dpy)
 	_XROOTPMAP_ID = XInternAtom(dpy, "_XROOTPMAP_ID", 0);
 	ESETROOT_PMAP_ID = XInternAtom(dpy, "ESETROOT_PMAP_ID", 0);
 	
+    _NET_ACTIVE_WINDOW = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", 0);
 	_NET_SUPPORTING_WM_CHECK = XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", 0);
 	_NET_SUPPORTED = XInternAtom(dpy, "_NET_SUPPORTED", 0);
 	_NET_NUMBER_OF_DESKTOPS = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", 0);
@@ -431,9 +431,49 @@ wm_set_fullscreen(Display *dpy, Window window, int x, int y, unsigned int width,
 	}
 }
 
+/*
+------------------------------------------------------------------
+Returns one of IconicState | NormalState | WithdrawnState | NULL :
+------------------------------------------------------------------
+*/
+#define WM_STATE_ELEMENTS 1
+
+static unsigned long *
+CheckWinMgrState(Display *dpy, Window window)
+{
+    unsigned long *property = NULL;
+    unsigned long nitems;
+    unsigned long leftover;
+    Atom xa_WM_STATE, actual_type;
+    int actual_format;
+    int status;
+
+    xa_WM_STATE = XInternAtom (dpy, "WM_STATE", False);
+
+    status = XGetWindowProperty (dpy, window,
+	xa_WM_STATE, 0L, WM_STATE_ELEMENTS,
+	False, xa_WM_STATE, &actual_type, &actual_format,
+	&nitems, &leftover, (unsigned char **)&property);
+
+    if (status != Success ||
+	actual_type != xa_WM_STATE ||
+	nitems != WM_STATE_ELEMENTS) {
+	if (property) {
+	    XFree ((char *)property);
+	    property = NULL;
+	}
+    }
+    return (property);
+}
+
 int
 wm_validate_window(Display *dpy, Window win)
 {
+	unsigned long *state = CheckWinMgrState(dpy, win);
+	if (state == NULL || *state != NormalState) {
+		return 0;
+	}
+
 	unsigned char *data;
 	Atom *atoms;
 	int status, real_format;

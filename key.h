@@ -16,9 +16,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_LAYOUT_H
-#define SKIPPY_LAYOUT_H
+#ifndef SKIPPY_KEY_H
+#define SKIPPY_KEY_H
 
-void layout_run(MainWin *, dlist *, unsigned int *, unsigned int *);
+typedef struct key_def {
+    KeyCode keycode;
+    unsigned int modifiers;
+} key_def_t;
 
-#endif /* SKIPPY_LAYOUT_H */
+int key_def_list_check(key_def_t **keys, XKeyEvent *event);
+key_def_t **key_def_list_create(Display *display, const char *line);
+void key_def_list_free(key_def_t **keys);
+void key_def_list_grab(key_def_t **keys, Display *display, Window grab_window);
+void key_init(Display *dpy);
+
+#endif /* SKIPPY_KEY_H */

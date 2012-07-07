@@ -1,5 +1,4 @@
-/* Skippy - Seduces Kids Into Perversion
- *
+/*
  * Copyright (C) 2004 Hyriand <hyriand@thegraveyard.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,10 +22,36 @@
 	(((x1 >= x2 && x1 < (x2 + w2)) || (x2 >= x1 && x2 < (x1 + w1))) && \
 	 ((y1 >= y2 && y1 < (y2 + h2)) || (y2 >= y1 && y2 < (y1 + h1))))
 
+/*
+ * Gets the topmost non-root ancestor of the given Window.
+ */
+static Window
+clientwin_get_topmost(Display *dpy, Window window)
+{
+    Window root;
+    Window parent;
+    Window *children;
+    unsigned int nchildren;
+
+    while (1) {
+	Status status = XQueryTree(dpy, window, &root, &parent, &children,
+	    &nchildren);
+	if (children != NULL) {
+	    XFree(children);
+	}
+	if (status == 0 || parent == root) {
+	    break;
+	}
+	window = parent;
+    }
+
+    return window;
+}
+
 int
 clientwin_cmp_func(dlist *l, void *data)
 {
-	return ((ClientWin*)l->data)->client.window == (Window)data;
+	return ((ClientWin*)l->data)->window == (Window)data;
 }
 
 int
@@ -34,31 +59,31 @@ clientwin_validate_func(dlist *l, void *data)
 {
 	ClientWin *cw = (ClientWin *)l->data;
 	CARD32 desktop = (*(CARD32*)data),
-		w_desktop = wm_get_window_desktop(cw->mainwin->dpy, cw->client.window);
+	    w_desktop = wm_get_window_desktop(cw->mainwin->dpy, cw->window);
 	
 #ifdef XINERAMA
-	if(cw->mainwin->xin_active && ! INTERSECTS(cw->client.x, cw->client.y, cw->client.width, cw->client.height,
+	if(cw->mainwin->xin_active && ! INTERSECTS(cw->topmost.x, cw->topmost.y, cw->topmost.width, cw->topmost.height,
 	                                           cw->mainwin->xin_active->x_org, cw->mainwin->xin_active->y_org,
 	                                           cw->mainwin->xin_active->width, cw->mainwin->xin_active->height))
 		return 0;
 #endif
 	
 	return (w_desktop == (CARD32)-1 || desktop == w_desktop) &&
-	       wm_validate_window(cw->mainwin->dpy, cw->client.window);
+	       wm_validate_window(cw->mainwin->dpy, cw->window);
 }
 
 int
 clientwin_check_group_leader_func(dlist *l, void *data)
 {
 	ClientWin *cw = (ClientWin *)l->data;
-	return wm_get_group_leader(cw->mainwin->dpy, cw->client.window) == *((Window*)data);
+	return wm_get_group_leader(cw->mainwin->dpy, cw->window) == *((Window*)data);
 }
 
 int
 clientwin_sort_func(dlist* a, dlist* b, void* data)
 {
-	unsigned int pa = ((ClientWin*)a->data)->client.x * ((ClientWin*)a->data)->client.y,
-	             pb = ((ClientWin*)b->data)->client.x * ((ClientWin*)b->data)->client.y;
+	unsigned int pa = ((ClientWin*)a->data)->topmost.x * ((ClientWin*)a->data)->topmost.y,
+	             pb = ((ClientWin*)b->data)->topmost.x * ((ClientWin*)b->data)->topmost.y;
 	return (pa < pb) ? -1 : (pa == pb) ? 0 : 1;
 }
 
@@ -92,7 +117,8 @@ clientwin_create(MainWin *mw, Window client)
 	
 	sattr.override_redirect = mw->lazy_trans;
 	
-	cw->client.window = client;
+	cw->window = client;
+	cw->topmost.window = clientwin_get_topmost(mw->dpy, client);
 	cw->mini.format = mw->format;
 	cw->mini.window = XCreateWindow(mw->dpy, mw->lazy_trans ? mw->root : mw->window, 0, 0, 1, 1, 0,
 	                                mw->depth, InputOutput, mw->visual,
@@ -104,15 +130,15 @@ clientwin_create(MainWin *mw, Window client)
 		return 0;
 	}
 	
-	XGetWindowAttributes(mw->dpy, client, &attr);
-	cw->client.format = XRenderFindVisualFormat(mw->dpy, attr.visual);
+	XGetWindowAttributes(mw->dpy, cw->topmost.window, &attr);
+	cw->topmost.format = XRenderFindVisualFormat(mw->dpy, attr.visual);
 	
 	pa.subwindow_mode = IncludeInferiors;
-	cw->origin = XRenderCreatePicture (cw->mainwin->dpy, cw->client.window, cw->client.format, CPSubwindowMode, &pa);
+	cw->origin = XRenderCreatePicture (cw->mainwin->dpy, cw->topmost.window, cw->topmost.format, CPSubwindowMode, &pa);
 	
 	XRenderSetPictureFilter(cw->mainwin->dpy, cw->origin, FilterBest, 0, 0);
 	
-	XSelectInput(cw->mainwin->dpy, cw->client.window, SubstructureNotifyMask | StructureNotifyMask);
+	XSelectInput(cw->mainwin->dpy, cw->window, SubstructureNotifyMask | StructureNotifyMask);
 	
 	return cw;
 }
@@ -123,16 +149,16 @@ clientwin_update(ClientWin *cw)
 	Window tmpwin;
 	XWindowAttributes wattr;
 	
-	XGetWindowAttributes(cw->mainwin->dpy, cw->client.window, &wattr);
+	XGetWindowAttributes(cw->mainwin->dpy, cw->topmost.window, &wattr);
 	
-	cw->client.format = XRenderFindVisualFormat(cw->mainwin->dpy, wattr.visual);
-	XTranslateCoordinates(cw->mainwin->dpy, cw->client.window, wattr.root,
+	cw->topmost.format = XRenderFindVisualFormat(cw->mainwin->dpy, wattr.visual);
+	XTranslateCoordinates(cw->mainwin->dpy, cw->topmost.window, wattr.root,
 		                      -wattr.border_width,
 		                      -wattr.border_width,
-		                      &cw->client.x, &cw->client.y, &tmpwin);
+		                      &cw->topmost.x, &cw->topmost.y, &tmpwin);
 	
-	cw->client.width = wattr.width;
-	cw->client.height = wattr.height;
+	cw->topmost.width = wattr.width;
+	cw->topmost.height = wattr.height;
 	
 	cw->mini.x = cw->mini.y = 0;
 	cw->mini.width = cw->mini.height = 1;
@@ -192,8 +218,8 @@ clientwin_render(ClientWin *cw)
 {
 	XRectangle rect;
 	rect.x = rect.y = 0;
-	rect.width = cw->client.width;
-	rect.height = cw->client.height;
+	rect.width = cw->topmost.width;
+	rect.height = cw->topmost.height;
 	clientwin_repaint(cw, &rect);
 }
 
@@ -239,8 +265,8 @@ clientwin_move(ClientWin *cw, float f, int x, int y)
 		cw->mini.x += cw->mainwin->x;
 		cw->mini.y += cw->mainwin->y;
 	}
-	cw->mini.width = MAX(1, (int)cw->client.width * f);
-	cw->mini.height = MAX(1, (int)cw->client.height * f);
+	cw->mini.width = MAX(1, (int)cw->topmost.width * f);
+	cw->mini.height = MAX(1, (int)cw->topmost.height * f);
 	XMoveResizeWindow(cw->mainwin->dpy, cw->mini.window, cw->mini.x - border, cw->mini.y - border, cw->mini.width, cw->mini.height);
 	
 	if(cw->pixmap)
@@ -261,7 +287,7 @@ clientwin_map(ClientWin *cw)
 	if(cw->damage)
 		XDamageDestroy(cw->mainwin->dpy, cw->damage);
 	
-	cw->damage = XDamageCreate(cw->mainwin->dpy, cw->client.window, XDamageReportDeltaRectangles);
+	cw->damage = XDamageCreate(cw->mainwin->dpy, cw->window, XDamageReportDeltaRectangles);
 	XRenderSetPictureTransform(cw->mainwin->dpy, cw->origin, &cw->mainwin->transform);
 	
 	clientwin_render(cw);
@@ -299,9 +325,37 @@ clientwin_unmap(ClientWin *cw)
 static void
 childwin_focus(ClientWin *cw)
 {
-	XWarpPointer(cw->mainwin->dpy, None, cw->client.window, 0, 0, 0, 0, cw->client.width / 2, cw->client.height / 2);
-	XRaiseWindow(cw->mainwin->dpy, cw->client.window);
-	XSetInputFocus(cw->mainwin->dpy, cw->client.window, RevertToParent, CurrentTime);
+	/*
+	 * XRaiseWindow doesn't work with most modern window managers as they
+	 * keep tight control over window placement.  Send an EWMH message to
+	 * the root window, and let the window manager raise it instead.
+	 */
+
+	/*
+	* See the EWMH spec:
+	* http://standards.freedesktop.org/wm-spec/wm-spec-1.3.html#id2731082
+	*/
+	XEvent event;
+	event.xclient.window = cw->topmost.window;
+	event.xclient.message_type = _NET_ACTIVE_WINDOW;
+	event.xclient.format = 32;
+	event.xclient.data.l[0] = 1;
+	event.xclient.data.l[1] = CurrentTime;
+	event.xclient.data.l[2] = cw->mainwin->window;
+	event.xclient.data.l[3] = 0;
+	event.xclient.data.l[4] = 0;
+	event.xclient.type = ClientMessage;
+	event.xclient.serial = 0;
+	event.xclient.send_event = True;
+	long mask = SubstructureRedirectMask | SubstructureNotifyMask;
+	XSendEvent(cw->mainwin->dpy, cw->mainwin->root, False, mask, &event);
+
+	/* For non EWMH-compliant window managers */
+	XRaiseWindow(cw->mainwin->dpy, cw->topmost.window);
+	XSetInputFocus(cw->mainwin->dpy, cw->topmost.window, RevertToParent,
+	    CurrentTime);
+
+	XWarpPointer(cw->mainwin->dpy, None, cw->topmost.window, 0, 0, 0, 0, cw->topmost.width / 2, cw->topmost.height / 2);
 }
 
 int
@@ -340,7 +394,7 @@ clientwin_handle(ClientWin *cw, XEvent *ev)
 		if(cw->mainwin->tooltip)
 		{
 			int win_title_len = 0;
-			FcChar8 *win_title = wm_get_window_title(cw->mainwin->dpy, cw->client.window, &win_title_len);
+			FcChar8 *win_title = wm_get_window_title(cw->mainwin->dpy, cw->window, &win_title_len);
 			if(win_title)
 			{
 				tooltip_map(cw->mainwin->tooltip,

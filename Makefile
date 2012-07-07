@@ -3,7 +3,7 @@ BINDIR = ${PREFIX}/bin
 
 X11PREFIX = /usr/X11R6
 
-CFLAGS += -I${X11PREFIX}/include `pkg-config xft xrender xcomposite xdamage xfixes --cflags` -g -pedantic -Wall
+CFLAGS += -I${X11PREFIX}/include `pkg-config xft xrender xcomposite xdamage xfixes --cflags` -g -xc99=%all
 LDFLAGS += -L${X11PREFIX}/lib -lX11 -lm `pkg-config xft xrender xcomposite xdamage xfixes --libs`
 
 # Disable post-processing effects
@@ -18,13 +18,13 @@ LDFLAGS += -lXext -lXinerama
 
 EXESUFFIX =
 
-SOURCES = skippy.c wm.c dlist.c mainwin.c clientwin.c layout.c focus.c config.c tooltip.c
-HEADERS = skippy.h wm.h dlist.h mainwin.h clientwin.h layout.h focus.h config.h tooltip.h
+SOURCES = skippy.c wm.c dlist.c regex.c key.c mainwin.c clientwin.c layout.c focus.c config.c tooltip.c
+HEADERS = skippy.h wm.h dlist.h regex.h key.h mainwin.h clientwin.h layout.h focus.h config.h tooltip.h
 
 all: skippy-xd${EXESUFFIX}
 
 skippy-xd${EXESUFFIX}: Makefile ${SOURCES} ${HEADERS}
-	gcc ${CFLAGS} -o skippy-xd${EXESUFFIX} ${SOURCES} ${LDFLAGS}
+	cc ${CFLAGS} -o skippy-xd${EXESUFFIX} ${SOURCES} ${LDFLAGS}
 
 clean:
 	rm -f skippy-xd${EXESUFFIX}
