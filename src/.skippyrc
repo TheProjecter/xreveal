@@ -1,9 +1,14 @@
-# Copy this to ~/.skippy-xd.rc and edit it to your liking
+# Copy this to ~/.skippyrc and edit it to your liking
 #
 # Notes:
 #
-# - keysym can be anything XStringToKeysym can handle
-#   (like F11, KP_Enter or implementation specific keysyms)
+# - keys is a comma- or space-separated list of elemeents of the form
+#   [<modifier>-]<keysym>, where <modifier> is "Shift", "Ctrl", "Alt", "Meta",
+#   or "Any", and <keysym> is a string XStringToKeysym can handle (like F11,
+#   KP_Enter or implementation specific keysyms).
+#
+# - keys-wingrp identifies the keys that show only the windows in the same
+#   window group as the active window.  It takes the same form as keys.
 #
 # - colors can be anything XAllocNamedColor can handle
 #   (like "black" or "#000000")
@@ -28,10 +33,12 @@
 #
 
 [general]
-keysym = F11
-distance = 50
-useNetWMFullscreen = true
-ignoreSkipTaskbar = true
+keys = Meta-z Find
+keys-wingrp = Alt-Meta-z Alt-Find
+mouse-corner = SW
+mouse-delay = 0.25
+distance = 15
+ignoreSkipTaskbar = false
 updateFreq = 10.0
 lazyTrans = false
 
@@ -41,11 +48,11 @@ showAll = false
 [normal]
 tint = black
 tintOpacity = 0
-opacity = 200
+opacity = 255
 
 [highlight]
 tint = #101020
-tintOpacity = 64
+tintOpacity = 50
 opacity = 255
 
 [tooltip]
@@ -55,4 +62,4 @@ background = #404040
 opacity = 128
 text = #e0e0e0
 textShadow = black
-font = fixed-11:weight=bold
+font = Monospace:style=Bold, 12

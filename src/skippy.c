@@ -321,7 +321,7 @@ main(void)
     }
 
     homedir = getpwuid(getuid())->pw_dir;
-    snprintf(cfgpath, 8191, "%s/%s", homedir, ".skippy-xd.rc");
+    snprintf(cfgpath, 8191, "%s/%s", homedir, ".skippyrc");
     config = config_load(cfgpath);
 
     wm_use_netwm_fullscreen(strcasecmp("true", config_get(config, "general", "useNETWMFullscreen", "true")) == 0);

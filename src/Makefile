@@ -21,14 +21,14 @@ EXESUFFIX =
 SOURCES = skippy.c wm.c dlist.c regex.c key.c mainwin.c clientwin.c layout.c focus.c config.c tooltip.c
 HEADERS = skippy.h wm.h dlist.h regex.h key.h mainwin.h clientwin.h layout.h focus.h config.h tooltip.h
 
-all: skippy-xd${EXESUFFIX}
+all: skippy${EXESUFFIX}
 
-skippy-xd${EXESUFFIX}: Makefile ${SOURCES} ${HEADERS}
-	cc ${CFLAGS} -o skippy-xd${EXESUFFIX} ${SOURCES} ${LDFLAGS}
+skippy${EXESUFFIX}: Makefile ${SOURCES} ${HEADERS}
+	cc ${CFLAGS} -o skippy${EXESUFFIX} ${SOURCES} ${LDFLAGS}
 
 clean:
-	rm -f skippy-xd${EXESUFFIX}
+	rm -f skippy${EXESUFFIX}
 
 install:
 	install -d ${DESTDIR}${BINDIR}
-	install -m 755 skippy-xd$(EXESUFFIX) ${DESTDIR}${BINDIR}/skippy-xd${EXESUFFIX}
+	install -m 755 skippy$(EXESUFFIX) ${DESTDIR}${BINDIR}/skippy${EXESUFFIX}
