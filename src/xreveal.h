@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_H
-#define SKIPPY_H
+#ifndef XREVEAL_H
+#define XREVEAL_H
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
@@ -67,4 +67,4 @@
 #include "config.h"
 #include "tooltip.h"
 
-#endif /* SKIPPY_H */
+#endif /* XREVEAL_H */

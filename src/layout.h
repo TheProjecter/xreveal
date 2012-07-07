@@ -16,9 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_LAYOUT_H
-#define SKIPPY_LAYOUT_H
+#ifndef XREVEAL_LAYOUT_H
+#define XREVEAL_LAYOUT_H
 
 void layout_run(MainWin *, dlist *, unsigned int *, unsigned int *);
 
-#endif /* SKIPPY_LAYOUT_H */
+#endif /* XREVEAL_LAYOUT_H */

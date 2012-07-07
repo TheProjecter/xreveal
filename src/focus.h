@@ -16,12 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_FOCUS_H
-#define SKIPPY_FOCUS_H
+#ifndef XREVEAL_FOCUS_H
+#define XREVEAL_FOCUS_H
 
 void focus_up(ClientWin *cw);
 void focus_down(ClientWin *cw);
 void focus_left(ClientWin *cw);
 void focus_right(ClientWin *cw);
 
-#endif /* SKIPPY_FOCUS_H */
+#endif /* XREVEAL_FOCUS_H */

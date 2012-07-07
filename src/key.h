@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_KEY_H
-#define SKIPPY_KEY_H
+#ifndef XREVEAL_KEY_H
+#define XREVEAL_KEY_H
 
 typedef struct key_def {
     KeyCode keycode;
@@ -30,4 +30,4 @@ void key_def_list_free(key_def_t **keys);
 void key_def_list_grab(key_def_t **keys, Display *display, Window grab_window);
 void key_init(Display *dpy);
 
-#endif /* SKIPPY_KEY_H */
+#endif /* XREVEAL_KEY_H */

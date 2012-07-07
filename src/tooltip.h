@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_TOOLTIP_H
-#define SKIPPY_TOOLTIP_H
+#ifndef XREVEAL_TOOLTIP_H
+#define XREVEAL_TOOLTIP_H
 
 struct _Tooltip {
 	MainWin *mainwin;
@@ -43,4 +43,4 @@ void tooltip_unmap(Tooltip *);
 void tooltip_handle(Tooltip *, XEvent *);
 void tooltip_move(Tooltip *, int, int);
 
-#endif /* SKIPPY_TOOLTIP_H */
+#endif /* XREVEAL_TOOLTIP_H */

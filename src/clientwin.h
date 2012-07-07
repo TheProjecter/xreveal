@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_CLIENT_H
-#define SKIPPY_CLIENT_H
+#ifndef XREVEAL_CLIENT_H
+#define XREVEAL_CLIENT_H
 
-struct _SkippyWindow {
+struct _XRevealWindow {
 	Window window;
 	int x, y;
 	unsigned int width, height;
 	XRenderPictFormat *format;
 };
 
-typedef struct _SkippyWindow SkippyWindow;
+typedef struct _XRevealWindow XRevealWindow;
 
 struct _MainWin;
 struct _ClientWin{
@@ -37,10 +37,10 @@ struct _ClientWin{
 	Window window;
 
 	/* The "framing" window, containing the main window and a frame */
-	SkippyWindow topmost;
+	XRevealWindow topmost;
 
 	/* The miniature version of the topmost window, added to mainwin */
-	SkippyWindow mini;
+	XRevealWindow mini;
 	
 	Pixmap pixmap;
 	Picture origin, destination;
@@ -72,4 +72,4 @@ void clientwin_render(ClientWin *);
 void clientwin_schedule_repair(ClientWin *cw, XRectangle *area);
 void clientwin_repair(ClientWin *cw);
 
-#endif /* SKIPPY_CLIENT_H */
+#endif /* XREVEAL_CLIENT_H */

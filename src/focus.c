@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "skippy.h"
+#include "xreveal.h"
 
-typedef float (*dist_func)(SkippyWindow *, SkippyWindow *);
-typedef int (*match_func)(dlist *, SkippyWindow *);
+typedef float (*dist_func)(XRevealWindow *, XRevealWindow *);
+typedef int (*match_func)(dlist *, XRevealWindow *);
 
 static void
 dir_focus(ClientWin *cw, match_func match, dist_func func)
@@ -53,12 +53,12 @@ dir_focus(ClientWin *cw, match_func match, dist_func func)
 #define SQR(x) pow(x, 2)
 
 #define DISTFUNC(name, d_x, d_y) \
-static float name (SkippyWindow *a, SkippyWindow *b) \
+static float name (XRevealWindow *a, XRevealWindow *b) \
 { return sqrt(SQR(d_x) + SQR(d_y)); }
 
 #define QUALFUNC(name, expr) \
-static int name(dlist *l, SkippyWindow *b) \
-{ SkippyWindow *a = &((ClientWin*)l->data)->mini; return expr; }
+static int name(dlist *l, XRevealWindow *b) \
+{ XRevealWindow *a = &((ClientWin*)l->data)->mini; return expr; }
 
 #define FOCUSFUNC(name, qual, dist) \
 void name(ClientWin *cw) { dir_focus(cw, qual, dist); }

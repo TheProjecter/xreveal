@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_WM_H
-#define SKIPPY_WM_H
+#ifndef XREVEAL_WM_H
+#define XREVEAL_WM_H
 
 Atom
 	/* Generic atoms */
@@ -75,4 +75,4 @@ CARD32 wm_get_window_desktop(Display *dpy, Window win);
 Window wm_get_focused(Display *dpy);
 void wm_ignore_skip_taskbar(Bool b);
 
-#endif /* SKIPPY_WM_H */
+#endif /* XREVEAL_WM_H */

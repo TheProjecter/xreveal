@@ -16,12 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_CONFIG_H
-#define SKIPPY_CONFIG_H
+#ifndef XREVEAL_CONFIG_H
+#define XREVEAL_CONFIG_H
 
 dlist *config_load(const char *);
 void config_free(dlist *);
 const char *config_get(dlist *, const char *, const char *, const char *);
 
-#endif /* SKIPPY_CONFIG_H */
+#endif /* XREVEAL_CONFIG_H */
 

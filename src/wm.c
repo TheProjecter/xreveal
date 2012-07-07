@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "skippy.h"
+#include "xreveal.h"
 
 #define WM_PERSONALITY_NETWM 0
 #define WM_PERSONALITY_GNOME 1

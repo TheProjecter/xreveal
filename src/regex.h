@@ -16,11 +16,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_REGEX_H
-#define SKIPPY_REGEX_H
+#ifndef XREVEAL_REGEX_H
+#define XREVEAL_REGEX_H
 
 char *re_match_copy(const char *line, regmatch_t *match);
 int re_match_check(regmatch_t *match);
 regoff_t re_match_len(regmatch_t *match);
 
-#endif /* SKIPPY_REGEX_H */
+#endif /* XREVEAL_REGEX_H */

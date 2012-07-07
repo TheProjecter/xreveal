@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "skippy.h"
+#include "xreveal.h"
 
 void
 layout_run(MainWin *mw, dlist *windows, unsigned int *total_width, unsigned int *total_height)

@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_MAINWIN_H
-#define SKIPPY_MAINWIN_H
+#ifndef XREVEAL_MAINWIN_H
+#define XREVEAL_MAINWIN_H
 
 struct _Tooltip;
 
@@ -68,4 +68,4 @@ void mainwin_update_background(MainWin *mw);
 void mainwin_update(MainWin *mw);
 void mainwin_transform(MainWin *mw, float f);
 
-#endif /* SKIPPY_MAINWIN_H */
+#endif /* XREVEAL_MAINWIN_H */

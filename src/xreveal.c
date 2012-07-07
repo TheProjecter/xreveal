@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "skippy.h"
+#include "xreveal.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
@@ -139,7 +139,7 @@ do_layout(MainWin *mw, dlist *clients, Window focus, Window leader)
 }
 
 static dlist *
-skippy_run(MainWin *mw, dlist *clients, Window focus, Window leader, Bool all_xin)
+xreveal_run(MainWin *mw, dlist *clients, Window focus, Window leader, Bool all_xin)
 {
     XEvent ev;
     int die = 0;
@@ -321,7 +321,7 @@ main(void)
     }
 
     homedir = getpwuid(getuid())->pw_dir;
-    snprintf(cfgpath, 8191, "%s/%s", homedir, ".skippyrc");
+    snprintf(cfgpath, 8191, "%s/%s", homedir, ".xrevealrc");
     config = config_load(cfgpath);
 
     wm_use_netwm_fullscreen(strcasecmp("true", config_get(config, "general", "useNETWMFullscreen", "true")) == 0);
@@ -408,7 +408,7 @@ main(void)
 	case KeyRelease:
 	    if (key_def_list_check(keys, &ev.xkey)) {
 		Window focused = wm_get_focused(mw->dpy);
-		clients = skippy_run(mw, clients, focused,
+		clients = xreveal_run(mw, clients, focused,
 		    None, all_xin);
 	    } else if (key_def_list_check(keys_wingrp, &ev.xkey)) {
 		Window focused = wm_get_focused(mw->dpy);
@@ -416,7 +416,7 @@ main(void)
 		    Window leader = wm_get_group_leader(
 			mw->dpy, focused);
 		    if(leader) {
-			clients = skippy_run(mw, clients,
+			clients = xreveal_run(mw, clients,
 			focused, leader, all_xin);
 		    }
 		}
@@ -454,7 +454,7 @@ main(void)
 		if (status == True && x == mouse_corner_x &&
 		    y == mouse_corner_y) {
 		    Window focused = wm_get_focused(mw->dpy);
-		    clients = skippy_run(mw, clients, focused,
+		    clients = xreveal_run(mw, clients, focused,
 			None, all_xin);
 		}
 	    }

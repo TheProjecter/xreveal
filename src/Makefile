@@ -18,17 +18,17 @@ LDFLAGS += -lXext -lXinerama
 
 EXESUFFIX =
 
-SOURCES = skippy.c wm.c dlist.c regex.c key.c mainwin.c clientwin.c layout.c focus.c config.c tooltip.c
-HEADERS = skippy.h wm.h dlist.h regex.h key.h mainwin.h clientwin.h layout.h focus.h config.h tooltip.h
+SOURCES = xreveal.c wm.c dlist.c regex.c key.c mainwin.c clientwin.c layout.c focus.c config.c tooltip.c
+HEADERS = xreveal.h wm.h dlist.h regex.h key.h mainwin.h clientwin.h layout.h focus.h config.h tooltip.h
 
-all: skippy${EXESUFFIX}
+all: xreveal${EXESUFFIX}
 
-skippy${EXESUFFIX}: Makefile ${SOURCES} ${HEADERS}
-	cc ${CFLAGS} -o skippy${EXESUFFIX} ${SOURCES} ${LDFLAGS}
+xreveal${EXESUFFIX}: Makefile ${SOURCES} ${HEADERS}
+	cc ${CFLAGS} -o xreveal${EXESUFFIX} ${SOURCES} ${LDFLAGS}
 
 clean:
-	rm -f skippy${EXESUFFIX}
+	rm -f xreveal${EXESUFFIX}
 
 install:
 	install -d ${DESTDIR}${BINDIR}
-	install -m 755 skippy$(EXESUFFIX) ${DESTDIR}${BINDIR}/skippy${EXESUFFIX}
+	install -m 755 xreveal$(EXESUFFIX) ${DESTDIR}${BINDIR}/xreveal${EXESUFFIX}

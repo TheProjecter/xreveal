@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SKIPPY_DLIST_H
-#define SKIPPY_DLIST_H
+#ifndef XREVEAL_DLIST_H
+#define XREVEAL_DLIST_H
 
 struct dlist_element {
 	void *data;
@@ -90,4 +90,4 @@ void dlist_swap(dlist *, dlist *);
 typedef int (*dlist_cmp_func)(dlist *, dlist *, void *);
 void dlist_sort(dlist *, dlist_cmp_func, void *);
 
-#endif /* SKIPPY_DLIST_H */
+#endif /* XREVEAL_DLIST_H */

@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "skippy.h"
+#include "xreveal.h"
 
 /* from 'uncover': */
 static Visual *
@@ -131,8 +131,8 @@ mainwin_create(Display *dpy, dlist *config)
 	
 	/* Set the class name */
 	XClassHint hint;
-	hint.res_name = "Skippy";
-	hint.res_class = "Skippy";
+	hint.res_name = "XReveal";
+	hint.res_class = "XReveal";
 	XSetClassHint(mw->dpy, mw->window, &hint);
 
 #ifdef XINERAMA
