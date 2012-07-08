@@ -224,10 +224,10 @@ mainwin_create(Display *dpy, dlist *config)
 		mw->highlightTint.green = exact_color.green;
 		mw->highlightTint.blue = exact_color.blue;
 	}
-	mw->highlightTint.alpha = MAX(0, MIN(strtol(config_get(config, "highlight", "tintOpacity", "64"), 0, 0) * 256, 65535));
+	mw->highlightTint.alpha = MAX(0, MIN(strtol(config_get(config, "highlight", "tintOpacity", "50"), 0, 0) * 256, 65535));
 	
 	pa.repeat = True;
-	clear.alpha = MAX(0, MIN(strtol(config_get(config, "normal", "opacity", "200"), 0, 10) * 256, 65535));
+	clear.alpha = MAX(0, MIN(strtol(config_get(config, "normal", "opacity", "255"), 0, 10) * 256, 65535));
 	mw->normalPixmap = XCreatePixmap(mw->dpy, mw->window, 1, 1, 8);
 	mw->normalPicture = XRenderCreatePicture(mw->dpy, mw->normalPixmap, XRenderFindStandardFormat(mw->dpy, PictStandardA8), CPRepeat, &pa);
 	XRenderFillRectangle(mw->dpy, PictOpSrc, mw->normalPicture, &clear, 0, 0, 1, 1);

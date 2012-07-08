@@ -342,7 +342,7 @@ main(void)
     key_def_t **keys = key_def_list_create(dpy,
 	config_get(config, "general", "keys", "F11"));
     key_def_t **keys_wingrp = key_def_list_create(dpy,
-	config_get(config, "general", "keys-wingrp", "F11"));
+	config_get(config, "general", "keys-wingrp", "Alt-F11"));
     if (keys == NULL || keys_wingrp == NULL) {
 	fprintf(stderr, "FATAL: out of memory\n", tmp);
 	config_free(config);

@@ -1,0 +1,177 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" 
+.\"   This manpage is free software; you can redistribute it and/or modify
+.\"   it under the terms of the GNU General Public License as published by
+.\"   the Free Software Foundation; version 2 dated June, 1991.
+.\"
+.\"   This package is distributed in the hope that it will be useful,
+.\"   but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"   GNU General Public License for more details.
+.\"
+.\"   You should have received a copy of the GNU General Public License
+.\"   along with this package; if not, write to the Free Software
+.\"   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+.\"   02111-1307, USA.
+.\"
+.\"  On Debian systems, the complete text of the GNU General Public
+.\"  License can be found in the file `/usr/share/common-licenses/GPL'.
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH XREVEALRC 5 "December  6, 2004"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+xrevealrc \- Configuration file for xreveal, a Full Screen Task Switcher for X11
+.SH DESCRIPTION
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBxreveal\fP is a program that allows you to manage your windows in an
+efficient way. It is highly inspired by Apple Expose.
+
+\fB~/.xrevealrc\fP is its configuration file.
+
+.SH FORMAT
+for each SECTION (see below), you can define the following variables:
+
+.TP
+.IR boolean 
+"true" for true, anything else for false
+.TP
+.IR color 
+can be anything XAllocNamedColor can handle (like "black" or "#000000")
+.TP
+.IR opacity 
+an integer in the range of 0 (transparent) to 255 (opaque)
+.TP
+.IR "key definition list"
+a comma- or space-separated list of elemeents of the form [<modifier>-]<keysym>,
+where <modifier> is "Shift", "Ctrl", "Alt", "Meta", or "Any", and <keysym> is a
+string XStringToKeysym can handle (like F11, KP_Enter or implementation specific
+keysyms).
+.SH SECTIONS
+.BR [general]
+.PP
+General xreveal behaviour.
+.PP
+.TP
+.IR "keys (key definition list)"
+the hot keys used to show the xreveal window (default: F11)
+.TP
+.IR "keys-wingrp (key definition list)"
+the hot keys used to show the xreveal window only for those windows in the same
+window group as the active window (default: Alt-F11)
+.TP
+.IR "mouse-corner (NW, SW, SE, or NE)"
+the "hot corner" of the screen that, when the mouse
+is moved to it, triggers the xreveal window (no default)
+.TP
+.IR "mouse-delay (floating point)"
+the amount of time, in seconds, the mouse pointer must be in a hot corner before
+the xreveal window is shown (default: 0.5)
+.TP
+.IR "distance (integer)"
+the distance between mini-windows; a relative number, scaled according to the
+scale factor applied to windows (default: 50)
+.TP
+.IR "ignoreSkipTaskbar (boolean)"
+ignore the skip taskbar hint (default: false)
+.TP
+.IR "useNETWMFullscreen (boolean)"
+use NETWM fullscreen mode if available (default: true)
+.TP
+.IR "updateFreq (floating point)"
+(default: 10.0)
+.TP
+.IR "lazyTrans (boolean)"
+(default: false)
+.TP
+.BR [xinerama]
+.PP
+Xinerama specific xreveal behaviour.
+.PP
+.TP
+.IR "showAll (boolean)"
+Show windows on all heads, default: false
+.TP
+.BR [normal]
+.PP
+Color and opacity settings for un-focused mini-windows.
+.PP
+.TP
+.IR "tint (color)"
+the color of the un-focused window tint (default: black)
+.TP
+.IR "tintOpacity (opacity)"
+the opacity of the un-focused window tint (default: 0)
+.TP
+.IR "opacity (opacity)"
+the opacity of the un-focused window content (default: 255)
+.TP
+.BR [highlight]
+.PP
+Color and opacity settings for focused mini-windows.
+.PP
+.TP
+.IR "tint (color)"
+the color of the focused window tint (default: #101020)
+.TP
+.IR "tintOpacity (opacity)"
+the opacity of the focused window tint (default: 50)
+.TP
+.IR "opacity (opacity)"
+the opacity of the focused window content (default: 255)
+.TP
+.BR [tooltip]
+.PP
+Tooltips settings.
+.PP
+.TP
+.IR "show (boolean)"
+whether to show a tooltip over the focused mini-window (default: true)
+.TP
+.IR "border (color)"
+the border color of the tooltip (default: black)
+.TP
+.IR "background (color)"
+the background color of the tooltip (default: #404040)
+.TP
+.IR "foreground (color)"
+the foreground of the tooltip (text) color (default: #e0e0e0)
+.TP
+.IR "textShadow (color)"
+the text shadow color of the tooltip (default: black)
+.TP
+.IR "opacity (opacity)"
+the opacity of the tooltip (default: 128)
+.TP
+.IR font
+an Xft font name for the tooltip (default: fixed-11:weight=bold)
+
+.SH FILES
+~/.xrevealrc
+
+.SH SEE ALSO
+.BR xreveal (1),
+
+.SH AUTHOR
+xreveal is based on skippy-hd (version 0.5.0), written by
+<hyriand@thegraveyard.org> and extended by Stephen Talley
+<stephentalley@nerdysoftware.com>.
+
+.PP
+This manual page was written by Niv Altivanik <xaiki@cxhome.ath.cx>
+for the Debian project and extended by Stephen Talley.

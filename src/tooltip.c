@@ -111,7 +111,7 @@ tooltip_create(MainWin *mw, dlist *config)
 	tt->background.color.alpha = tmp_l;
 	tt->border.color.alpha = tmp_l;
 	
-	tmp = config_get(config, "tooltip", "text", "#e0e0e0");
+	tmp = config_get(config, "tooltip", "foreground", "#e0e0e0");
 	if(! XftColorAllocName(mw->dpy, mw->visual, mw->colormap, tmp, &tt->color))
 	{
 		fprintf(stderr, "WARNING: Couldn't allocate color '%s'.\n", tmp);

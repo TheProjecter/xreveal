@@ -1,37 +1,4 @@
-# Copy this to ~/.xrevealrc and edit it to your liking
-#
-# Notes:
-#
-# - keys is a comma- or space-separated list of elemeents of the form
-#   [<modifier>-]<keysym>, where <modifier> is "Shift", "Ctrl", "Alt", "Meta",
-#   or "Any", and <keysym> is a string XStringToKeysym can handle (like F11,
-#   KP_Enter or implementation specific keysyms).
-#
-# - keys-wingrp identifies the keys that show only the windows in the same
-#   window group as the active window.  It takes the same form as keys.
-#
-# - colors can be anything XAllocNamedColor can handle
-#   (like "black" or "#000000")
-#
-# - distance is a relative number, and is scaled according to the scale
-#   factor applied to windows
-#
-# - fonts are Xft font descriptions
-#
-# - booleans are "true" or anything but "true" (-> false)
-#
-# - opacity is an integer in the range of 0-255
-#
-# - brighness is a floating point number (with 0.0 as neutral)
-#
-# - if the update frequency is a negative value, the mini-windows will only
-#   be updated when they're explicitly rendered (like, when they gain or
-#   lose focus).
-#
-# - the 'shadowText' option can be a color or 'none', in which case the
-#   drop-shadow effect is disabled
-#
-
+# Copy to ~/.xrevealrc and edit.  See xrevealrc(1).
 [general]
 keys = Meta-z Find
 keys-wingrp = Alt-Meta-z Alt-Find
@@ -39,6 +6,7 @@ mouse-corner = SW
 mouse-delay = 0.25
 distance = 15
 ignoreSkipTaskbar = false
+useNETWMFullscreen = true
 updateFreq = 10.0
 lazyTrans = false
 
@@ -60,6 +28,6 @@ show = true
 border = #e0e0e0
 background = #404040
 opacity = 128
-text = #e0e0e0
+foreground = #e0e0e0
 textShadow = black
 font = Monospace:style=Bold, 12

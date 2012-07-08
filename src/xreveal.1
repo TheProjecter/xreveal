@@ -1,0 +1,72 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" 
+.\" 
+.\"   This manpage is free software; you can redistribute it and/or modify
+.\"   it under the terms of the GNU General Public License as published by
+.\"   the Free Software Foundation; version 2 dated June, 1991.
+.\"
+.\"   This package is distributed in the hope that it will be useful,
+.\"   but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"   GNU General Public License for more details.
+.\"
+.\"   You should have received a copy of the GNU General Public License
+.\"   along with this package; if not, write to the Free Software
+.\"   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+.\"   02111-1307, USA.
+.\"
+.\"  On Debian systems, the complete text of the GNU General Public
+.\"  License can be found in the file `/usr/share/common-licenses/GPL'.
+.\"
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH XREVEAL 1 "December  6, 2004"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+xreveal \- Full Screen Task Switcher for X11
+.SH SYNOPSIS
+.B xreveal
+.SH DESCRIPTION
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBxreveal\fP is a program that allows you to manage your windows in an
+efficient way. It is highly inspired by Apple Expose.
+.SH NOTE
+Please note that xreveal will fail when another application (such as xbindkeys)
+has used XGrabKey to grab the configured hot key.
+
+.SH USAGE
+Press a configured hot key (the default hot key is F11) or move the mouse into a
+configured "hot corner". Then choose a window with either the keyboard (you can
+use up, down, left and right to navigate) or the mouse (just hover over a
+window) and activate it by pressing the left mouse button or the return or
+spacebar key.
+
+.SH FILES
+.BR ~/.xrevealrc
+
+.SH SEE ALSO
+.BR xrevealrc (1),
+
+.SH AUTHOR
+xreveal is based on skippy-hd (version 0.5.0), written by
+<hyriand@thegraveyard.org> and extended by Stephen Talley
+<stephentalley@nerdysoftware.com>.
+
+.PP
+This manual page was written by Niv Altivanik <xaiki@cxhome.ath.cx>
+for the Debian project and extended by Stephen Talley.
