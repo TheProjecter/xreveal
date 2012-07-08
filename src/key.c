@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <X11/Xproto.h>
 #include "xreveal.h"
 #include "key.h"
 #include "regex.h"
@@ -38,6 +39,9 @@ static int SCROLLLOCK_MASK = 0;
 static int LOCK_MASKS[] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1
 };
+
+static XErrorHandler old_handler;
+static key_def_t *grabbing;
 
 /*
  * Static functions
@@ -129,13 +133,24 @@ key_set_modifier_masks(Display *display) {
     add_to_lock_masks(CAPSLOCK_MASK | NUMLOCK_MASK | SCROLLLOCK_MASK);
 }
 
+static int
+XGrabKeyErrorHandler(Display *d, XErrorEvent *e) {
+    if (e->request_code == X_GrabKey && e->error_code == BadAccess) {
+	fprintf(stderr,
+	    "WARNING: key already in use by another application: %s\n",
+	    grabbing->desc);
+	return 0;
+    }
+    return old_handler(d, e);
+}
+
 /*
  * Extern functions
  */
 
 #define	REGEX_KEY_MODPREFIX "((any)|(shift)|(ctrl)|(alt)|(meta))-"
-#define	REGEX_KEY_LIST "^[[:space:],]*((" REGEX_KEY_MODPREFIX \
-    ")*)([^[:space:],]+)(.*)"
+#define	REGEX_KEY_LIST "^[[:space:],]*(((" REGEX_KEY_MODPREFIX \
+    ")*)([^[:space:],]+))(.*)"
 #define	REGEX_KEY_MOD "^(" REGEX_KEY_MODPREFIX ")(.*)"
 
 int
@@ -159,21 +174,21 @@ key_def_t **
 key_def_list_create(Display *display, const char *line) {
     regex_t re_list;
     regcomp(&re_list, REGEX_KEY_LIST, REG_EXTENDED | REG_ICASE);
-    regmatch_t list_match[11];
+    regmatch_t list_match[12];
 
     regex_t re_mod;
     regcomp(&re_mod, REGEX_KEY_MOD, REG_EXTENDED | REG_ICASE);
-    regmatch_t mod_match[11];
+    regmatch_t mod_match[9];
 
     int n = 1;
     key_def_t **list = malloc(sizeof(key_def_t *));
     if (list == NULL) {
 	return NULL;
     }
-    list[n] = NULL;
+    list[0] = NULL;
 
     while (regexec(&re_list, line, COUNT(list_match), list_match, 0) == 0) {
-	char *symstr = re_match_copy(line, &list_match[9]);
+	char *symstr = re_match_copy(line, &list_match[10]);
 	if (symstr == NULL) {
 	    key_def_list_free(list);
 	    return NULL;
@@ -202,11 +217,12 @@ key_def_list_create(Display *display, const char *line) {
 		    return NULL;
 		}
 		list[n - 2] = key;
+		key->desc = re_match_copy(line, &list_match[1]);
 		key->keycode = keycode;
 		key->modifiers = 0;
 
-		if (re_match_len(&list_match[1]) > 0) {
-		    char *modstr = re_match_copy(line, &list_match[1]);
+		if (re_match_len(&list_match[2]) > 0) {
+		    char *modstr = re_match_copy(line, &list_match[2]);
 		    if (modstr == NULL) {
 			free(symstr);
 			key_def_list_free(list);
@@ -237,7 +253,7 @@ key_def_list_create(Display *display, const char *line) {
 
 	free(symstr);
 
-	line = list_match[10].rm_sp;
+	line = list_match[11].rm_sp;
     }
 
     regfree(&re_list);
@@ -250,6 +266,7 @@ void
 key_def_list_free(key_def_t **keys) {
     if (keys != NULL) {
 	for (int i = 0; keys[i] != NULL; i++) {
+	    free(keys[i]->desc);
 	    free(keys[i]);
 	}
 	free(keys);
@@ -258,19 +275,29 @@ key_def_list_free(key_def_t **keys) {
 
 void
 key_def_list_grab(key_def_t **keys, Display *display, Window grab_window) {
+    /* Not thread safe */
+    old_handler = XSetErrorHandler(XGrabKeyErrorHandler);
+
     for (int i = 0; keys[i] != NULL; i++) {
+	grabbing = keys[i];
 	if (keys[i]->modifiers & AnyModifier) {
 	    XGrabKey(display, keys[i]->keycode, AnyModifier, grab_window, False,
 		GrabModeAsync, GrabModeAsync);
+	    /* Force any call to error handler before grabbing gets reset */
+	    XSync(display, 0);
 	} else {
 	    for (int j = 0; LOCK_MASKS[j] != -1; j++) {
 		int modmask = keys[i]->modifiers | LOCK_MASKS[j];
 		XGrabKey(display, keys[i]->keycode,
 		    keys[i]->modifiers | LOCK_MASKS[j], grab_window, False,
 		    GrabModeAsync, GrabModeAsync);
+		/* Force any call to error handler before grabbing gets reset */
+		XSync(display, 0);
 	    }
 	}
     }
+
+    XSetErrorHandler(old_handler);
 }
 
 void

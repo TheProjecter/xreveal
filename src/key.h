@@ -20,6 +20,7 @@
 #define XREVEAL_KEY_H
 
 typedef struct key_def {
+    char *desc;
     KeyCode keycode;
     unsigned int modifiers;
 } key_def_t;
