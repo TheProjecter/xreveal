@@ -284,7 +284,7 @@ key_def_list_grab(key_def_t **keys, Display *display, Window grab_window) {
 	    XGrabKey(display, keys[i]->keycode, AnyModifier, grab_window, False,
 		GrabModeAsync, GrabModeAsync);
 	    /* Force any call to error handler before grabbing gets reset */
-	    XSync(display, 0);
+	    XSync(display, False);
 	} else {
 	    for (int j = 0; LOCK_MASKS[j] != -1; j++) {
 		int modmask = keys[i]->modifiers | LOCK_MASKS[j];
@@ -292,7 +292,7 @@ key_def_list_grab(key_def_t **keys, Display *display, Window grab_window) {
 		    keys[i]->modifiers | LOCK_MASKS[j], grab_window, False,
 		    GrabModeAsync, GrabModeAsync);
 		/* Force any call to error handler before grabbing gets reset */
-		XSync(display, 0);
+		XSync(display, False);
 	    }
 	}
     }
