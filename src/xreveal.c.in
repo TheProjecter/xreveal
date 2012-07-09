@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <getopt.h>
 #include "key.h"
 
 static int DIE_NOW = 0;
@@ -298,13 +299,76 @@ xreveal_run(MainWin *mw, dlist *clients, Window focus, Window leader, Bool all_x
     return clients;
 }
 
+static void
+print_usage(FILE* stream, char *pname) {
+    fprintf(stream, "Usage: %s <options>\n", pname);
+}
+
+static void
+print_help(char *pname) {
+    print_usage(stdout, pname);
+    fprintf(stderr,
+	"\n"
+	"Full screen arranging/revealing window pager.\n"
+	"\n"
+	"Options:\n"
+	"\n"
+	"-h,--help\n"
+	"    Print this message and exit.\n"
+	"\n"
+	"-v,--version\n"
+	"    Print the version and exit.\n");
+}
+
+#define	VERSION	"REPLACEME_VERSION"
+#define	DATE	"REPLACEME_DATE"
+
 int
-main(void)
-{
+main(int argc, char *argv[]) {
+    char *pname = strchr(argv[0], '/');
+    if (pname != NULL) {
+	pname++;
+    } else {
+	pname = argv[0];
+    }
+
+    const char* const shortopts = "hv";
+    const struct option longopts[] = {
+	{"help", no_argument, NULL, 'h'},
+	{"version", no_argument, NULL, 'v'},
+	{0,0,0,0},
+    };
+
+    // Turn off getopt error message
+    opterr = 0;
+
+    int c = 0;
+    while (c != -1) {
+	int index;
+	c = getopt_long(argc, argv, shortopts, longopts, &index);
+	switch (c) {
+	case 'h':
+	    print_help(pname);
+	    return 0;
+
+	case 'v':
+	    fprintf(stderr, "%s %s (%s)\n", pname, VERSION, DATE);
+	    return 0;
+
+	case '?':
+	    fprintf(stderr, "%s: invalid option: -%c\n\n", pname, optopt);
+	    print_usage(stderr, pname);
+	    return -1;
+	}
+    }
+    if (optind < argc) {
+	fprintf(stderr, "%s: invalid argument: %s\n\n", pname, argv[optind]);
+	print_usage(stderr, pname);
+    }
+
     dlist *clients = 0, *config = 0;
     Display *dpy = XOpenDisplay(NULL);
     MainWin *mw;
-    const char *tmp, *homedir;
     char cfgpath[8192];
     Bool all_xin = False;
 
@@ -320,7 +384,7 @@ main(void)
 	return -1;
     }
 
-    homedir = getpwuid(getuid())->pw_dir;
+    const char *homedir = getpwuid(getuid())->pw_dir;
     snprintf(cfgpath, 8191, "%s/%s", homedir, ".xrevealrc");
     config = config_load(cfgpath);
 
@@ -344,7 +408,7 @@ main(void)
     key_def_t **keys_wingrp = key_def_list_create(dpy,
 	config_get(config, "general", "keys-wingrp", "Alt-F11"));
     if (keys == NULL || keys_wingrp == NULL) {
-	fprintf(stderr, "FATAL: out of memory\n", tmp);
+	fprintf(stderr, "FATAL: out of memory\n");
 	config_free(config);
 	key_def_list_free(keys);
 	key_def_list_free(keys_wingrp);

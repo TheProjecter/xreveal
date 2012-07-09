@@ -45,7 +45,8 @@ efficient way. It is highly inspired by Apple Expose.
 \fB~/.xrevealrc\fP is its configuration file.
 
 .SH FORMAT
-for each SECTION (see below), you can define the following variables:
+Multiple types of variables are defined in the ~/.xrevealrc (see SECTIONS,
+below).  Common types are:
 
 .TP
 .IR boolean 
@@ -105,7 +106,7 @@ Xinerama specific xreveal behaviour.
 .PP
 .TP
 .IR "showAll (boolean)"
-Show windows on all heads, default: false
+show windows on all heads (default: false)
 .TP
 .BR [normal]
 .PP
@@ -158,7 +159,7 @@ the text shadow color of the tooltip (default: black)
 .IR "opacity (opacity)"
 the opacity of the tooltip (default: 128)
 .TP
-.IR font
+.IR "font (string)"
 an Xft font name for the tooltip (default: fixed-11:weight=bold)
 
 .SH FILES
