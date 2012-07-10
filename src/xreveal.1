@@ -36,25 +36,23 @@
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
 .SH NAME
-xreveal \- Full Screen Task Switcher for X11
+xreveal \- Full-screen window selector for X11
 .SH SYNOPSIS
 .B xreveal
 .SH DESCRIPTION
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
 .\" respectively.
-\fBxreveal\fP is a program that allows you to manage your windows in an
-efficient way. It is highly inspired by Apple Expose.
-.SH NOTE
-Please note that xreveal will fail when another application (such as xbindkeys)
-has used XGrabKey to grab the configured hot key.
+\fBxreveal\fP is a full-screen window selector that shows all open windows in a
+scaled-down, rearranged format for quick selection by the user. It is inspired
+by Apple Exposé.
 
 .SH USAGE
-Press a configured hot key (the default hot key is F11) or move the mouse into a
-configured "hot corner". Then choose a window with either the keyboard (you can
-use up, down, left and right to navigate) or the mouse (just hover over a
-window) and activate it by pressing the left mouse button or the return or
-spacebar key.
+Press a hot key (the default hot key is F11) or move the mouse into a "hot
+corner" to launch the window selector. Then choose a window with either the
+keyboard (use up, down, left and right to navigate) or the mouse (hover over a
+window) and activate it by clicking the mouse or pressing the return or spacebar
+keys.
 
 .SH FILES
 .BR ~/.xrevealrc
@@ -66,7 +64,3 @@ spacebar key.
 xreveal is based on skippy-hd (version 0.5.0), written by
 <hyriand@thegraveyard.org> and extended by Stephen Talley
 <stephentalley@nerdysoftware.com>.
-
-.PP
-This manual page was written by Niv Altivanik <xaiki@cxhome.ath.cx>
-for the Debian project and extended by Stephen Talley.
