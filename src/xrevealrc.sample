@@ -1,4 +1,4 @@
-# Copy to ~/.xrevealrc and edit.  See xrevealrc(1).
+# Copy to ~/.xrevealrc and edit.  See xrevealrc(5).
 
 [general]
 keys = Meta-z Find
